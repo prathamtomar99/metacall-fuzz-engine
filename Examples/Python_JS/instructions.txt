@@ -1,32 +1,63 @@
-// Start Server
+MetaCall FaaS Execution Instructions
+===================================
 
-cd /Users/prathamtomar/Desktop/GSOC2026/faas-fork
+1. Start MetaCall FaaS Server
+-----------------------------
+cd faas-fork
+npm install
 npm start
 
+(Keep this terminal running)
 
-// zip - package - deploy
+--------------------------------------------------
 
-cd /Users/prathamtomar/Desktop/GSOC2026/working-test/js_python
+2. Package and Deploy Functions
+-------------------------------
+Open a new terminal:
 
+cd Examples/js_python
+
+# Create deployment package
 rm -f deploy.zip
 zip -r deploy.zip main.py functions.js metacall-py.json
 
+# Upload package
 curl -X POST http://localhost:9000/api/package/create \
   -F "id=test10" \
   -F "file=@deploy.zip;type=application/zip"
 
+# Deploy package
 curl -X POST http://localhost:9000/api/deploy/create \
   -H "Content-Type: application/json" \
   -d '{"suffix": "test10", "env": [], "version": "v1"}'
 
+--------------------------------------------------
 
-// Fire
-
-curl -X POST http://localhost:9000/Prathams-MacBook-Air.local/fuzziest/v1/call/complex_calc \
+3. Trigger Function
+-------------------
+curl -X POST http://localhost:9000/localhost/test10/v1/call/complex_calc \
   -H "Content-Type: application/json" \
-  -d '{"a": 3, "b": 4}' && echo ""
+  -d '{"a": 3, "b": 4}'
 
+--------------------------------------------------
 
-// Run directly
-
+4. Run Directly (Optional)
+--------------------------
 metacall main.py
+
+--------------------------------------------------
+
+Requirements
+------------
+- Node.js installed
+- MetaCall CLI installed
+- curl installed
+- zip installed
+
+--------------------------------------------------
+
+Notes
+-----
+- Run commands from the root of the repository
+- Ensure the server is running before deploying
+- Update function name or payload as needed

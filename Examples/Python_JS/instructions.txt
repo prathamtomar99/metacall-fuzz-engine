@@ -23,19 +23,24 @@ zip -r deploy.zip main.py functions.js metacall-py.json
 
 # Upload package
 curl -X POST http://localhost:9000/api/package/create \
-  -F "id=test10" \
+  -F "id=test40" \
   -F "file=@deploy.zip;type=application/zip"
 
 # Deploy package
 curl -X POST http://localhost:9000/api/deploy/create \
   -H "Content-Type: application/json" \
-  -d '{"suffix": "test10", "env": [], "version": "v1"}'
+  -d '{"suffix": "test40", "env": [], "version": "v1"}'
 
 --------------------------------------------------
 
 3. Trigger Function
 -------------------
-curl -X POST http://localhost:9000/localhost/test10/v1/call/complex_calc \
+curl -X POST http://localhost:9000/localhost/test40/v1/call/complex_calc \
+  -H "Content-Type: application/json" \
+  -d '{"a": 3, "b": 4}'
+
+e.g.
+curl -X POST http://localhost:9000/Prathams-MacBook-Air.local/test40/v1/call/complex_calc \
   -H "Content-Type: application/json" \
   -d '{"a": 3, "b": 4}'
 

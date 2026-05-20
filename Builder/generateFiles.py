@@ -1,9 +1,9 @@
 import os, sys
 sys.path.insert(0, '/home/claude')
 from makers import FuncBuilder, DEPLOY_MAKERS, TEST_MAKERS
+
 OUT_DIR = "./output"
 os.makedirs(OUT_DIR, exist_ok=True)
-
 DISPLAY = {"rb": "rb", "py": "py", "js": "js"}
 
 
@@ -13,36 +13,49 @@ def make_specs(lang: str) -> list:
         B().func(f"{lang}_add", lang)
           .arg("a", "int", 3)
           .arg("b", "int", 4)
+          .arg("msg", "str", "add called")   # ← msg arg for logging assertion
+          .assert_("msg", "add called")       # ← asserts msg == "add called"
           .returns("a + b", "int", expected=7)
           .build(),
 
         B().func(f"{lang}_sub", lang)
           .arg("a", "float", 5.5)
           .arg("b", "float", 2.5)
+          .arg("msg", "str", "sub called")
+          .assert_("msg", "sub called")
           .returns("a - b", "float", expected=3.0)
           .build(),
 
         B().func(f"{lang}_mul", lang)
           .arg("a", "int", 3)
           .arg("b", "int", 4)
+          .arg("msg", "str", "mul called")
+          .assert_("msg", "mul called")
           .returns("a * b", "int", expected=12)
           .build(),
 
         B().func(f"{lang}_concat", lang)
           .arg("a", "str", "hello")
           .arg("b", "str", "world")
+          .arg("msg", "str", "concat called")
+          .assert_("msg", "concat called")
           .returns("a + b", "str", expected="helloworld")
           .build(),
 
         B().func(f"{lang}_negate", lang)
           .arg("v", "bool", True)
+          .arg("msg", "str", "negate called")
+          .assert_("msg", "negate called")
           .returns("not v", "bool", expected=False)
           .build(),
 
         B().func(f"{lang}_zero", lang)
+          .arg("msg", "str", "zero called")
+          .assert_("msg", "zero called")
           .returns(0, "null")
           .build(),
     ]
+
 
 generated = []
 
@@ -58,12 +71,9 @@ for lang in ["js", "py", "rb"]:
     print(f"[deploy]  {path}")
 
 pairs = [
-    ("js", "py"),
-    ("js", "rb"),
-    ("py", "js"),
-    ("py", "rb"),
-    ("rb", "js"),
-    ("rb", "py"),
+    ("js", "py"), ("js", "rb"),
+    ("py", "js"), ("py", "rb"),
+    ("rb", "js"), ("rb", "py"),
 ]
 
 for caller, callee in pairs:
